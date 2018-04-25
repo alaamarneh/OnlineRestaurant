@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "750158283073",
+    "firebase_url": "https://onlinerestaurant-f392e.firebaseio.com",
+    "project_id": "onlinerestaurant-f392e",
+    "storage_bucket": "onlinerestaurant-f392e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750158283073:android:d6c80d518aa01578",
+        "android_client_info": {
+          "package_name": "com.am.onlinerestaurant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750158283073-v7nbddt6e4e66is6cah99fbh58jpscrg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYOBdKd5CQdTB5eUI-uY02GzNbV5zVB_M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

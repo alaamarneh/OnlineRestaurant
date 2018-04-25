@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:gravity="center"
+    android:layout_margin="5dp"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/imgRestaurant"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp" />
+    <TextView
+        android:textStyle="bold"
+        android:textColor="@color/textColor"
+        android:id="@+id/tvName"
+        android:text="name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
