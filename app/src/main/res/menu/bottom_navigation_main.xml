@@ -11,6 +11,10 @@
         android:title="Explore"
         android:icon="@drawable/ic_restaurant_black_24dp"
         android:id="@+id/action_explore"/>
+    <item
+        android:title="Cart"
+        android:icon="@drawable/ic_restaurant_black_24dp"
+        android:id="@+id/action_cart"/>
 
     <item
         android:title="Profile"

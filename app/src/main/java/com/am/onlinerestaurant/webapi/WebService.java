@@ -41,9 +41,11 @@ public class WebService implements WebApi {
                 Restaurant r1 = new Restaurant();
                 r1.setName("Havana");r1.setImgUrl("https://scontent.fjrs3-1.fna.fbcdn.net/v/t1.0-9/22154518_1451020685013107_8433095934352618647_n.jpg?oh=f444418b75d891e9a466d903a1077dd2&oe=5B019A3D");
                 r1.setImgLargeUrl("https://scontent.fjrs3-1.fna.fbcdn.net/v/t1.0-9/23319315_1484676401647535_7035311270002603316_n.jpg?oh=6f8d238ecfc9e97b1971618dc57a80b0&oe=5B3B4A13");
+                r1.setId("r1");
                 Restaurant r2= new Restaurant();
                  r2.setName("Zorba");r2.setImgUrl("https://scontent.fjrs3-1.fna.fbcdn.net/v/t1.0-9/26113733_754845364716533_4475124620418595203_n.jpg?oh=1ef841f50ba93773c67287f3515de4e5&oe=5B3489FD");
                 r2.setImgLargeUrl("https://scontent.fjrs3-1.fna.fbcdn.net/v/t1.0-9/26112008_754844828049920_7517435969782167789_n.jpg?oh=9997b6c53dafa1257b0222d5fb737ecb&oe=5B34718B");
+                r2.setId("r2");
                 ArrayList<Restaurant> list = new ArrayList<>();
                 list.add(r1);list.add(r2);
                 list.add(r1);list.add(r2);
@@ -107,7 +109,8 @@ public class WebService implements WebApi {
                 food.setName("Food1");
                 food.setDescription("Fooooood 1");
                 food.setNewPrice(15.99f);
-                Restaurant restaurant1 = new Restaurant();restaurant1.setName("Havana");
+                Restaurant restaurant1 = new Restaurant();
+                restaurant1.setName("Havana");
                 food.setRestaurant(restaurant1);
 
                 Food food1 = new Food();food1.setId("f1");
@@ -116,6 +119,7 @@ public class WebService implements WebApi {
                 food1.setDescription("Caaaake");
                 food1.setNewPrice(19.99f);
                 Restaurant restaurant2 = new Restaurant();restaurant2.setName("Zorba");restaurant1.setId("r1");restaurant2.setId("r2");
+
                 food1.setRestaurant(restaurant2);
 
 

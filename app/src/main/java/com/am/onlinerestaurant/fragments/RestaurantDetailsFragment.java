@@ -18,15 +18,13 @@ import android.widget.TextView;
 
 import com.am.onlinerestaurant.ICallBack;
 import com.am.onlinerestaurant.R;
-import com.am.onlinerestaurant.abstractAdapters.Holder;
-import com.am.onlinerestaurant.abstractAdapters.RecyclerAdapter;
+import com.am.onlinerestaurant.common.abstractAdapters.Holder;
+import com.am.onlinerestaurant.common.abstractAdapters.RecyclerAdapter;
 import com.am.onlinerestaurant.activities.FoodDetailsActivity;
-import com.am.onlinerestaurant.models.Category;
 import com.am.onlinerestaurant.models.Food;
 import com.am.onlinerestaurant.models.Restaurant;
 import com.am.onlinerestaurant.models.RestaurantCat;
 import com.am.onlinerestaurant.webapi.WebFactory;
-import com.am.onlinerestaurant.webapi.WebService;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -60,6 +58,7 @@ public class RestaurantDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_restaurant_details, container, false);
     }
     public void setCat(RestaurantCat restaurantCat){
+        /*
         WebFactory.getWebService().getFood(restaurantCat, new ICallBack<List<Food>>() {
             @Override
             public void onResponse(List<Food> value) {
@@ -82,6 +81,19 @@ public class RestaurantDetailsFragment extends Fragment {
 
             }
         });
+        */
+        MyAdapterMain adapterMain = new MyAdapterMain(restaurantCat.getFoods()){
+            @Override
+            public void onItemClicked(Food item,View view) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(getActivity(), view.findViewById(R.id.image), "trImage");
+
+                Intent i = new Intent(getContext(), FoodDetailsActivity.class);
+                i.putExtra("model",item);
+                startActivity(i,options.toBundle());
+            }
+        };
+        recyclerViewMain.setAdapter(adapterMain);
     }
 
     @Override

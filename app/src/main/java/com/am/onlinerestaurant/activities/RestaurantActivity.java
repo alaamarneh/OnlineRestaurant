@@ -1,29 +1,38 @@
 package com.am.onlinerestaurant.activities;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.am.onlinerestaurant.ICallBack;
 import com.am.onlinerestaurant.R;
-import com.am.onlinerestaurant.abstractAdapters.Holder;
-import com.am.onlinerestaurant.abstractAdapters.RecyclerAdapter;
-import com.am.onlinerestaurant.fragments.CartFragment;
+import com.am.onlinerestaurant.common.abstractAdapters.Holder;
+import com.am.onlinerestaurant.common.abstractAdapters.RecyclerAdapter;
+import com.am.onlinerestaurant.data.DataManager;
+import com.am.onlinerestaurant.ui.base.BaseActivity;
+import com.am.onlinerestaurant.ui.other.CartFragment;
 import com.am.onlinerestaurant.fragments.RestaurantDetailsFragment;
-import com.am.onlinerestaurant.models.Cart;
 import com.am.onlinerestaurant.models.Restaurant;
 import com.am.onlinerestaurant.models.RestaurantCat;
+import com.am.onlinerestaurant.ui.cart.CartItemsActivity;
 import com.am.onlinerestaurant.webapi.WebFactory;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.kennyc.bottomsheet.BottomSheet;
+import com.kennyc.bottomsheet.BottomSheetListener;
+import com.kennyc.bottomsheet.menu.BottomSheetMenu;
 
 import java.util.List;
 
-public class RestaurantActivity extends AppCompatActivity implements CartFragment.OnFragmentInteractionListener{
+public class RestaurantActivity extends BaseActivity implements CartFragment.OnFragmentInteractionListener{
 
     private Restaurant mRestaurant;
     private ImageView imageBackground, imageTop;
@@ -31,6 +40,8 @@ public class RestaurantActivity extends AppCompatActivity implements CartFragmen
     private RestaurantDetailsFragment mFragment;
     private TextView tvRestaurantName;
     private CartFragment cartFragment;
+    private View btnMenu;
+    private List<RestaurantCat> restaurantCats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,7 @@ public class RestaurantActivity extends AppCompatActivity implements CartFragmen
         imageTop = findViewById(R.id.imageTop);
         recyclerViewTop = findViewById(R.id.recyclerViewTop);
         tvRestaurantName = findViewById(R.id.tvRestaurantName);
+        btnMenu= findViewById(R.id.btnMenu);
 
 
         recyclerViewTop.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
@@ -59,8 +71,35 @@ public class RestaurantActivity extends AppCompatActivity implements CartFragmen
                 .into(imageTop);
         tvRestaurantName.setText(mRestaurant.getName());
 
+        btnMenu.setOnClickListener(view -> {
+            showMenu();
+
+        });
 
         refreshData();
+    }
+
+    private void showMenu() {
+        BottomSheetMenu menu = new BottomSheetMenu(this);
+        for (int i =0;i<restaurantCats.size();i++)
+            menu.add(1,i,i,restaurantCats.get(i).getName());
+
+        bottomSheet(this, "Menu", menu, new BottomSheetListener() {
+            @Override
+            public void onSheetShown(@NonNull BottomSheet bottomSheet, @Nullable Object o) {
+
+            }
+
+            @Override
+            public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem, @Nullable Object o) {
+                mFragment.setCat(restaurantCats.get(menuItem.getItemId()));
+            }
+
+            @Override
+            public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @Nullable Object o, int i) {
+
+            }
+        });
     }
 
     @Override
@@ -74,6 +113,15 @@ public class RestaurantActivity extends AppCompatActivity implements CartFragmen
     }
 
     private void refreshData() {
+        DataManager.getWebHelper()
+                .getRestaurantCategories(mRestaurant.getId())
+                .observe(this,listLiveResponse -> {
+                    if(listLiveResponse!=null&&listLiveResponse.isSuccess()){
+                        mFragment.setCat(listLiveResponse.data.get(0));
+                        restaurantCats = listLiveResponse.data;
+                    }
+                });
+        /*
         WebFactory.getWebService().getCategories(mRestaurant, new ICallBack<List<RestaurantCat>>() {
             @Override
             public void onResponse(List<RestaurantCat> value) {
@@ -92,12 +140,14 @@ public class RestaurantActivity extends AppCompatActivity implements CartFragmen
 
             }
         });
+        */
     }
 
     @Override
     public void onCartFragmentClicked() {
-        Cart.getCart(this).clear(this);
-        cartFragment.refresh();
+//        Cart.getCart(this).clear(this);
+//        cartFragment.refresh();
+        startActivity(new Intent(this, CartItemsActivity.class));
     }
 
 

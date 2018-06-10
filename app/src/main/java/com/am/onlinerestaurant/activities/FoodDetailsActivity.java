@@ -4,43 +4,42 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.am.onlinerestaurant.R;
-import com.am.onlinerestaurant.Utils;
-import com.am.onlinerestaurant.abstractAdapters.Holder;
-import com.am.onlinerestaurant.abstractAdapters.RecyclerAdapter;
-import com.am.onlinerestaurant.fragments.CartFragment;
+import com.am.onlinerestaurant.adapters.FoodCatAdapter;
+import com.am.onlinerestaurant.controllers.CartController;
+import com.am.onlinerestaurant.ui.other.CartFragment;
 import com.am.onlinerestaurant.models.Cart;
 import com.am.onlinerestaurant.models.CartItem;
 import com.am.onlinerestaurant.models.Food;
-import com.am.onlinerestaurant.models.FoodCat;
 import com.bumptech.glide.Glide;
-
-import java.util.List;
 
 public class FoodDetailsActivity extends AppCompatActivity implements CartFragment.OnFragmentInteractionListener{
     private ImageView imageBackground;
     private TextView tvPrice,tvName,tvDescription,tvQuantity;
     private Button btnInc,btnDec,btnAddToCart;
+    private EditText txtSpecialRequest;
     private RecyclerView recyclerViewCat;
     private View layoutQuantity;
+    private CartController mCartController;
 
-    private CartFragment cartFragment;
+//    private CartFragment cartFragment;
     private Food mFood;
-    private MyAdapter mAdapter;
+    private FoodCatAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_details);
-        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("");
+        setTitle("Item details");
 
         mFood = getIntent().getParcelableExtra("model");
 
@@ -54,10 +53,12 @@ public class FoodDetailsActivity extends AppCompatActivity implements CartFragme
         btnAddToCart = findViewById(R.id.btnAddToCart);
         recyclerViewCat = findViewById(R.id.recyclerViewCat);
         layoutQuantity = findViewById(R.id.layoutQuantity);
+        txtSpecialRequest = findViewById(R.id.txtSpecialRequest);
+        mCartController = new CartController();
 
-        cartFragment = new CartFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentCart, cartFragment)
-                .commit();
+//        cartFragment = new CartFragment();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.contentCart, cartFragment)
+//                .commit();
 
         recyclerViewCat.setLayoutManager(new LinearLayoutManager(this));
 
@@ -77,62 +78,72 @@ public class FoodDetailsActivity extends AppCompatActivity implements CartFragme
         btnAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Cart cart = Cart.getCart(FoodDetailsActivity.this)
-                        .addItem(FoodDetailsActivity.this,getCartItem());
-                refreshCart();
-                tvQuantity.setText(cart.getItemCount(mFood) +"");
+                    mCartController.addItemToCart(FoodDetailsActivity.this,getCartItem());
 
-                v.setVisibility(View.GONE);
-                layoutQuantity.setVisibility(View.VISIBLE);
+
+                finish();
+
             }
         });
 
         refreshData();
-
-
-
     }
 
     private CartItem getCartItem() {
-//        int q = Integer.parseInt(tvQuantity.getText().toString());
-        CartItem ci = new CartItem(mFood,1);
+        int q = Integer.parseInt(tvQuantity.getText().toString());
+        CartItem ci;
+        if(mFood.getFoodCats()==null){
+            ci = new CartItem(mFood,q);
+        }else{
+            ci = new CartItem(mAdapter.getSelectedFoodCat(),q);
+        }
+
+        if(!TextUtils.isEmpty(txtSpecialRequest.getText())){
+            String msg = txtSpecialRequest.getText().toString().trim();
+            ci.setMessage(msg);
+        }
         return ci;
     }
 
     private void decrement() {
-        Cart cart = Cart.getCart(this).decrementItem(this,mFood);
-        updateUI(cart);
-        refreshCart();
+        int q = Integer.parseInt(tvQuantity.getText().toString());
+        q--;
+        if(q <= 0){
+            q = 1;
+        }
+        tvQuantity.setText(q+"");
+//        Cart cart = Cart.getCart(this).decrementItem(this,mFood);
+//        updateUI(cart);
+//        refreshCart();
 
     }
 
     private void increment() {
-        Cart cart = Cart.getCart(this).incrementItem(this,mFood);
-        updateUI(cart);
-        refreshCart();
+        int q = Integer.parseInt(tvQuantity.getText().toString());
+        q++;
+        tvQuantity.setText(q+"");
     }
 
     private void refreshData() {
         Glide.with(this).load(mFood.getImgUrl()).into(imageBackground);
+
         tvName.setText(mFood.getName());
         tvPrice.setText(mFood.getNewPrice() + "NIS");
         tvDescription.setText(mFood.getDescription());
-
+        tvQuantity.setText("1");
         if(mFood.getFoodCats() == null){
-            btnAddToCart.setVisibility(View.VISIBLE);
+//            btnAddToCart.setVisibility(View.VISIBLE);
             tvPrice.setVisibility(View.VISIBLE);
             Log.d("tag","mFood.getFoodCats() = null");
             recyclerViewCat.setVisibility(View.GONE);
 
-            Cart cart = Cart.getCart(this);
-            updateUI(cart);
         }else{
             Log.d("tag","mFood.getFoodCats() != null");
-            btnAddToCart.setVisibility(View.GONE);
+
             tvPrice.setVisibility(View.GONE);
-            layoutQuantity.setVisibility(View.GONE);
+//            layoutQuantity.setVisibility(View.GONE);
             recyclerViewCat.setVisibility(View.VISIBLE);
-            mAdapter = new MyAdapter(mFood.getFoodCats());
+            mAdapter = new FoodCatAdapter(mFood.getFoodCats());
             recyclerViewCat.setAdapter(mAdapter);
         }
 
@@ -154,16 +165,12 @@ public class FoodDetailsActivity extends AppCompatActivity implements CartFragme
         tvQuantity.setText(q+"");
     }
 
-    private void refreshCart(){
-        cartFragment.refresh();
-
-    }
 
     @Override
     public void onCartFragmentClicked() {
 
     }
-
+/*
     class FoodCatHolder extends Holder<Food>{
         private TextView tvName,tvPrice,tvQuantity;
         private Button btnInc,btnDec,btnAddToCart;
@@ -248,5 +255,5 @@ public class FoodDetailsActivity extends AppCompatActivity implements CartFragme
             return new FoodCatHolder(v);
         }
     }
-
+*/
 }

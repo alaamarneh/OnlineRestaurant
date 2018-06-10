@@ -6,14 +6,11 @@ import android.widget.TextView;
 
 import com.am.onlinerestaurant.ICallBack;
 import com.am.onlinerestaurant.R;
-import com.am.onlinerestaurant.abstractAdapters.Holder;
-import com.am.onlinerestaurant.abstractAdapters.RecyclerAdapter;
-import com.am.onlinerestaurant.fragments.mainFragments.RestaurantsListFragment;
-import com.am.onlinerestaurant.models.Restaurant;
+import com.am.onlinerestaurant.common.abstractAdapters.Holder;
+import com.am.onlinerestaurant.common.abstractAdapters.RecyclerAdapter;
 import com.am.onlinerestaurant.models.RestaurantCat;
 import com.am.onlinerestaurant.webapi.WebApi;
 import com.am.onlinerestaurant.webapi.WebFactory;
-import com.am.onlinerestaurant.webapi.WebService;
 import com.bumptech.glide.Glide;
 
 import java.util.List;

@@ -23,6 +23,9 @@ import android.view.MenuItem;
 import com.am.onlinerestaurant.activities.BuyChatActivity;
 import com.am.onlinerestaurant.fragments.mainFragments.HomeFragment;
 import com.am.onlinerestaurant.fragments.mainFragments.RestaurantsListFragment;
+import com.am.onlinerestaurant.ui.cart.CartViewFragment;
+import com.am.onlinerestaurant.ui.profile.ProfileFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.action_explore:
                                 replaceFragment(new RestaurantsListFragment(),false);
                                 break;
+                            case R.id.action_cart:
+                                replaceFragment(new CartViewFragment(),false);
+                                break;
                             case R.id.action_profile:
-                                Intent i = new Intent(MainActivity.this, BuyChatActivity.class);
-                                startActivity(i);
+                                replaceFragment(new ProfileFragment(),false);
                                 break;
                         }
                         return true;

@@ -1,5 +1,7 @@
-package com.am.onlinerestaurant.fragments;
+package com.am.onlinerestaurant.ui.other;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,22 +19,14 @@ import com.am.onlinerestaurant.models.Cart;
 public class CartFragment extends Fragment {
     private TextView tvItems,tvCartPrice;
     private View layoutCart;
+    private CartViewModel mCartViewModel;
 
     private OnFragmentInteractionListener mListener;
 
     public CartFragment() {
     }
     public void refresh(){
-        Cart cart = Cart.getCart(getContext());
-        if(cart.isEmpty()){
-            layoutCart.setVisibility(View.GONE);
-        }else{
-            layoutCart.setVisibility(View.VISIBLE);
-            int count = cart.getCount();
-            double price = cart.getPrice();
-            tvItems.setText(count + " Items");
-            tvCartPrice.setText(price+" NIS");
-        }
+        mCartViewModel.refresh();
     }
 
     @Override
@@ -46,6 +40,7 @@ public class CartFragment extends Fragment {
         tvItems = view.findViewById(R.id.tvItems);
         tvCartPrice = view.findViewById(R.id.tvCartPrice);
         layoutCart = view.findViewById(R.id.layoutCart);
+        mCartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +50,24 @@ public class CartFragment extends Fragment {
             }
         });
 
-        refresh();
+
+        mCartViewModel.getCartMutableLiveData().observe(this, new Observer<Cart>() {
+            @Override
+            public void onChanged(@Nullable Cart cart) {
+                if(cart == null)
+                    return;
+                if(cart.isEmpty()){
+                    layoutCart.setVisibility(View.GONE);
+                }else{
+                    layoutCart.setVisibility(View.VISIBLE);
+                    int count = cart.getCount();
+                    double price = cart.getPrice();
+                    tvItems.setText(count + " Items");
+                    tvCartPrice.setText(price+" NIS");
+                }
+            }
+        });
+
     }
 
     @Override

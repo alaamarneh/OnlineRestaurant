@@ -17,16 +17,14 @@ import android.widget.TextView;
 
 import com.am.onlinerestaurant.ICallBack;
 import com.am.onlinerestaurant.R;
-import com.am.onlinerestaurant.abstractAdapters.Holder;
-import com.am.onlinerestaurant.abstractAdapters.RecyclerAdapter;
+import com.am.onlinerestaurant.common.abstractAdapters.Holder;
+import com.am.onlinerestaurant.common.abstractAdapters.RecyclerAdapter;
 import com.am.onlinerestaurant.activities.RestaurantActivity;
-import com.am.onlinerestaurant.fragments.FoodListFragment;
+import com.am.onlinerestaurant.data.DataManager;
 import com.am.onlinerestaurant.models.Food;
 import com.am.onlinerestaurant.models.Restaurant;
-import com.am.onlinerestaurant.models.RestaurantCat;
 import com.am.onlinerestaurant.webapi.WebApi;
 import com.am.onlinerestaurant.webapi.WebFactory;
-import com.am.onlinerestaurant.webapi.WebService;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -59,17 +57,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void refreshDataFromWeb() {
-        mWebApi.getRestaurants(new ICallBack<List<Restaurant>>() {
-            @Override
-            public void onResponse(List<Restaurant> value) {
-                loadListToRestaurantAdapter(value);
-            }
-
-            @Override
-            public void onError(String err) {
-
-            }
-        });
+        DataManager.getWebHelper()
+                .getRestaurants()
+                .observe(this,listLiveResponse -> {
+                    if(listLiveResponse!=null && listLiveResponse.isSuccess()){
+                        loadListToRestaurantAdapter(listLiveResponse.data);
+                    }
+                });
+ 
         mWebApi.getTopFood(new ICallBack<List<Food>>() {
             @Override
             public void onResponse(List<Food> value) {
